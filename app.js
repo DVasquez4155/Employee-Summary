@@ -1,19 +1,17 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const Employee = require("./lib/Employee");
-// const inquirer = require("inquirer");
-// const path = require("path");
-// const fs = require("fs");
-// ​
-// const OUTPUT_DIR = path.resolve(__dirname, "output")
-// const outputPath = path.join(OUTPUT_DIR, "team.html");
-// ​
-// const render = require("./lib/htmlRenderer");
-const test = new Employee('Daniel', '1', 'email');
-test.name = "test";
-console.log(test)
+const inquirer = require("inquirer");
+const path = require("path");
+const fs = require("fs");
+const OUTPUT_DIR = path.resolve(__dirname, "output")
+const outputPath = path.join(OUTPUT_DIR, "team.html");
 
+const render = require("./lib/htmlRenderer");
+
+const test = new Engineer('Daniel', '1', 'email', '10');
+console.log(test)
+const testArray = [test];
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 // ​
