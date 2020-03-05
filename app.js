@@ -6,12 +6,26 @@ const path = require("path");
 const fs = require("fs");
 const OUTPUT_DIR = path.resolve(__dirname, "output")
 const outputPath = path.join(OUTPUT_DIR, "team.html");
-
 const render = require("./lib/htmlRenderer");
 
-const test = new Engineer('Daniel', '1', 'email', '10');
-console.log(test)
-const testArray = [test];
+function init() {
+    const testArray = [
+        new Engineer('Daniel', '1', 'email', '10'),
+        new Manager('Daniel', '1', 'email', '10'),
+        new Intern('Daniel', '1', 'email', '10')
+    ];
+    const rendered = render(testArray);
+    if (!fs.existsSync(OUTPUT_DIR)){
+        fs.mkdirSync(OUTPUT_DIR);
+    }
+    fs.writeFile(outputPath, rendered, function(err) {
+        if(err) {
+            return console.log(err);
+        }
+        console.log("The file was saved!");
+    });
+}
+init();
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 // ​
