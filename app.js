@@ -13,6 +13,8 @@ const render = require("./lib/htmlRenderer");
 const employees = [];
 async function init() {
     await askForEmployees();
+    // const employee = new Manager('Name','email','ID','RM');
+    // employees.push(employee)
     const rendered = render(employees);
     writeFile(rendered)
 }
@@ -34,16 +36,27 @@ async function askForEmployees() {
             return;
         }
         const emp = {}
-        const name = await inquirer.prompt(q.employeeName);
-        emp.employeeName = name.employeeName
-        const info = await askForOthers(name.employeeName);
+        const questions = [q.employeeName,q.employeeTitle,q.employeeId,q.employeeEmail]
+        const info = await inquirer.prompt(questions);
+        emp.employeeName = info.employeeName
         emp.employeeTitle = info.employeeTitle;
         emp.employeeId = info.employeeId;
         emp.employeeEmail = info.employeeEmail;
-        const contact = await inquirer.prompt(replaceReturn(replaceReturn(q.employeeContact, '${employeeName}', name.employeeName),'${employeeContact}',q.getEmployeeContact(emp.employeeTitle)))
-        emp.employeeContact = contact.employeeContact
-        employees.push(newEmployee(emp))
+        const contact = await askForContact(info)
+        // emp.employeeContact = contact.employeeContact
+        // employees.push(newEmployee(emp))
     }
+}
+async function askForContact(info) {
+    const employeeContact = q.getEmployeeContact(info.employeeTitle);
+    const contactQuestion = q.employeeContact;
+    contactQuestion.message = contactQuestion.message.replace('${employeeContact}', employeeContact)
+    // q.employeeContact should be untouched. Why is it being replaced?
+    console.log(q.employeeContact)
+    // const contactQuestion = replaceReturn(replaceReturn(employeeContact, '${employeeName}', name.employeeName),'${employeeContact}',q.getEmployeeContact(emp.employeeTitle))
+    // console.log(contactQuestion)
+    // return await inquirer.prompt(contactQuestion)
+
 }
 function newEmployee(emp) {
     switch (emp.employeeTitle) {
@@ -54,19 +67,6 @@ function newEmployee(emp) {
         case 'Intern':
             return new Intern(emp.employeeName,emp.employeeId,emp.employeeEmail,emp.employeeContact)
     }
-}
-function replaceReturn(question, string, replace) {
-    const q = question;
-    q.message = q.message.replace(string, replace)
-    return q;
-}
-async function askForOthers(name) {
-    const questions = [
-        replaceReturn(q.employeeTitle, '${employeeName}', name),
-        replaceReturn(q.employeeId, '${employeeName}', name),
-        replaceReturn(q.employeeEmail, '${employeeName}', name)
-    ]
-    return await inquirer.prompt(questions);
 }
 
 init();
