@@ -36,26 +36,30 @@ async function askForEmployees() {
             return;
         }
         const emp = {}
-        const questions = [q.employeeName,q.employeeTitle,q.employeeId,q.employeeEmail]
-        const info = await inquirer.prompt(questions);
-        emp.employeeName = info.employeeName
+        const questions = [q.employeeTitle,q.employeeId,q.employeeEmail]
+        // const info = await inquirer.prompt(questions);
+        const name = await inquirer.prompt(q.employeeName);
+        emp.employeeName = name.employeeName;
+        const info = await inquirer.prompt(questionsWithName(questions, emp.employeeName));
         emp.employeeTitle = info.employeeTitle;
         emp.employeeId = info.employeeId;
         emp.employeeEmail = info.employeeEmail;
-        const contact = await askForContact(info)
-        // emp.employeeContact = contact.employeeContact
-        // employees.push(newEmployee(emp))
+        const contact = await askForContact(emp)
+        emp.employeeContact = contact.employeeContact
+        employees.push(newEmployee(emp))
     }
+}
+function questionsWithName(questions,name) {
+    return JSON.parse(JSON.stringify(questions).split("${employeeName}").join(name))
 }
 async function askForContact(info) {
     const employeeContact = q.getEmployeeContact(info.employeeTitle);
-    const contactQuestion = q.employeeContact;
-    contactQuestion.message = contactQuestion.message.replace('${employeeContact}', employeeContact)
-    // q.employeeContact should be untouched. Why is it being replaced?
-    console.log(q.employeeContact)
-    // const contactQuestion = replaceReturn(replaceReturn(employeeContact, '${employeeName}', name.employeeName),'${employeeContact}',q.getEmployeeContact(emp.employeeTitle))
-    // console.log(contactQuestion)
-    // return await inquirer.prompt(contactQuestion)
+    const contactQuestion = JSON.parse(
+        JSON.stringify(q.employeeContact)
+        .replace('${employeeContact}', employeeContact)
+        .split("${employeeName}").join(info.employeeName)
+    );
+    return await inquirer.prompt(contactQuestion)
 
 }
 function newEmployee(emp) {
