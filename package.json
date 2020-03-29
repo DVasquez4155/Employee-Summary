@@ -23,6 +23,7 @@
   "dependencies": {
     "fs": "0.0.1-security",
     "inquirer": "^6.5.2",
+    "minimist": "^1.2.5",
     "path": "^0.12.7"
   },
   "devDependencies": {
